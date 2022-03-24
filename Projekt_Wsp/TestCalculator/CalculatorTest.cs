@@ -49,5 +49,12 @@ namespace TestCalculator
             Assert.AreEqual(calc.MultiplicationNumbers(-1, 6), -6);
             Assert.AreEqual(calc.MultiplicationNumbers(-1, 1), -1);
         }
+
+        [TestMethod]
+        public void AverageTest()
+        {
+            double[] Array = { 1, 2, 3, 4 };
+            Assert.AreEqual(calc.Average(Array), 2.5);
+        }
     }
 }
