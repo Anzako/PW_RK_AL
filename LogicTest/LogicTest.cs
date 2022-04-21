@@ -1,17 +1,18 @@
 using NUnit.Framework;
-using System.Numerics;
 
-namespace Data.DataTest
+namespace Logic.LogicTest
 {
-    public class BallTest
+    public class Tests
     {
+        private BallsLogic logicTest;
+
         [SetUp]
         public void Setup()
         {
         }
 
         [Test]
-        public void TestBall()
+        public void Test1()
         {
             Assert.Pass();
         }
