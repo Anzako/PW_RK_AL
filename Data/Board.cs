@@ -13,8 +13,8 @@ namespace Data
 
         public Board(int width, int height)
         {
-            this._width = width;
-            this._height = height;
+            _width = width;
+            _height = height;
         }
         
         public int Width 
@@ -22,8 +22,8 @@ namespace Data
             get { return _width; } 
         }
         public int Height 
-        { 
-            get { return _height; } 
+        { get 
+            { return _height; } 
         }
     }
 }

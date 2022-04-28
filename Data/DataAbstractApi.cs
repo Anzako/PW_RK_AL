@@ -8,14 +8,14 @@ namespace Data
 {
     public abstract class DataAbstractApi
     {
-        public static Ball createBall(float x, float y)
+        public static DataAbstractApi CreateApi()
         {
-            return new Ball(x, y);
+            return new DataApi();
         }
 
-        public static Board createBoard(int w, int h)
+        internal class DataApi : DataAbstractApi
         {
-            return new Board(w, h);
+
         }
     }
 }

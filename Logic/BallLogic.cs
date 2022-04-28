@@ -2,61 +2,108 @@
 
 namespace Logic
 {
-    public class BallLogic : DataAbstractApi
+    public abstract class LogicApi
     {
-        private Board _board = createBoard(100, 100);
-        private List<Ball> balls = new List<Ball>();
-        Random random = new Random();
-        int maxSpeed = 3;
-        public Ball generateBall()
+        public abstract int MaxSpeed { get; set; }
+
+        public abstract List<Ball> Balls { get; }
+        public abstract Ball generateBall();
+
+        public abstract Board? Board { get; }
+
+        public abstract void createBalls(int amount);
+
+        public abstract Board createBoard(int width, int height);
+
+        public abstract void addBall(Ball ball);
+
+        public abstract int getAmountOfBalls();
+
+        public abstract void setRandomXVelocity(Ball ball, int x, int y);
+
+        public abstract void setRandomYVelocity(Ball ball, int x, int y);
+
+        public abstract void moveBall(Ball ball);
+
+        public static LogicApi CreateLogicApi(int maxSpeed, int width, int height)
         {
-            return createBall(random.Next(0, _board.Width), random.Next(0, _board.Height));
+           return new BallLogic(maxSpeed, width, height);
         }
 
-        public void addBall(Ball ball)
+    }
+    internal class BallLogic : LogicApi
+    {
+        private Random _random = new Random();
+        public override List<Ball> Balls { get; }
+        public override Board? Board { get; }
+
+        private DataAbstractApi DataL;
+
+        public override int MaxSpeed
         {
-            balls.Add(ball);
+            get { return MaxSpeed; }
+            set { MaxSpeed = value; }
         }
 
-        public Ball getBall(int index)
+        public BallLogic(int maxSpeed, int width, int height)
         {
-            return balls[index];
+            DataL = DataAbstractApi.CreateApi();
+            MaxSpeed = maxSpeed;
+            Balls = new List<Ball>();
+            Board = createBoard(width, height);
         }
 
-        public int getAmountOfBalls()
+        public override void addBall(Ball ball)
         {
-            return balls.Count;
+            Balls.Add(ball);
         }
 
-        public void createBalls(int amount)
+        public override void createBalls(int amount)
         {
-            for(int i = 0; i < amount; i++)
+            for (int i = 0; i < amount; i++)
             {
                 addBall(generateBall());
             }
         }
 
-        public void setRandomXVelocity(Ball ball, int x, int y)
+        public override Ball generateBall()
         {
-            ball.XVelocity = random.Next(x, y);
+            return new Ball(_random.Next(0, Board.Width), _random.Next(0, Board.Height));
         }
 
-        public void setRandomYVelocity(Ball ball, int x, int y)
+        public override Board createBoard(int width, int height)
         {
-            ball.YVelocity = random.Next(x, y);
+            return new Board(width, height);
         }
 
-        public void moveBall(Ball ball)
+        public override int getAmountOfBalls()
+        {
+            return Balls.Count;
+        }
+
+        public override void setRandomXVelocity(Ball ball, int x, int y)
+        {
+            ball.XVelocity = _random.Next(x, y);
+        }
+
+        public override void setRandomYVelocity(Ball ball, int x, int y)
+        {
+            ball.YVelocity = _random.Next(x, y); ;
+        }
+
+        public override void moveBall(Ball ball)
         {
             if (ball.XPosition + ball.XVelocity < 0)
             {
                 ball.XPosition = 0;
-                setRandomXVelocity(ball, 0, maxSpeed);
-            } else if(ball.XPosition + ball.XVelocity > _board.Width)
+                setRandomXVelocity(ball, 0, MaxSpeed);
+            }
+            else if (ball.XPosition + ball.XVelocity > Board.Width)
             {
-                ball.XPosition = _board.Width;
+                ball.XPosition = Board.Width;
 
-            } else
+            }
+            else
             {
                 ball.XPosition = ball.XPosition + ball.XVelocity;
             }
@@ -65,10 +112,11 @@ namespace Logic
             {
                 ball.YPosition = 0;
             }
-            else if (ball.YPosition + ball.YVelocity > _board.Height)
+            else if (ball.YPosition + ball.YVelocity > Board.Height)
             {
-                ball.YPosition = _board.Height;
-            } else
+                ball.YPosition = Board.Height;
+            }
+            else
             {
                 ball.YPosition = ball.YPosition + ball.YVelocity;
             }
