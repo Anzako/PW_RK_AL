@@ -16,5 +16,14 @@ namespace Data
             this._width = width;
             this._height = height;
         }
+        public int getWidth()
+        {
+            return _width;
+        }
+
+        public int getHeight()
+        {
+            return _height;
+        }
     }
 }

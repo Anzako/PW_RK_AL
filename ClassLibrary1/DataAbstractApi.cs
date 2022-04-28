@@ -17,8 +17,5 @@ namespace Data
         {
             return new Board(w, h);
         }
-
-
-
     }
 }
