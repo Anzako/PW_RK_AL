@@ -7,12 +7,13 @@ namespace LogicTest
     public class Tests
     {
         BallLogic ballLogic;
-        
+        Board board;
 
         [SetUp]
         public void Setup()
         {
-             ballLogic = new BallLogic();
+            ballLogic = new BallLogic();
+            board = new Board(20, 20);
         }
 
         [Test]

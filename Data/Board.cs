@@ -8,8 +8,8 @@ namespace Data
 {
     public class Board
     {
-        private int _width = 800;
-        private int _height = 800;
+        private int _width;
+        private int _height;
 
         public Board(int width, int height)
         {
@@ -22,8 +22,8 @@ namespace Data
             get { return _width; } 
         }
         public int Height 
-        { get 
-            { return _height; } 
+        { 
+            get { return _height; } 
         }
     }
 }

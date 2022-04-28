@@ -37,14 +37,5 @@
             get { return _yVelocity; }
             set { _yVelocity = value; }
         }
-
-        public override bool Equals(object? obj)
-        {
-            return obj is Ball ball &&
-                   _xPosition == ball._xPosition &&
-                   _yPosition == ball._yPosition &&
-                   _xVelocity == ball._xVelocity &&
-                   _yVelocity == ball._yVelocity;
-        }
     }
 }
