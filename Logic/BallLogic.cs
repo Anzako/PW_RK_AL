@@ -25,7 +25,18 @@ namespace Logic
 
         public abstract void moveBall(Ball ball);
 
+        public abstract Ball getBallFromList(int index);
+
+        public abstract int getBallFromListXVAlue(int index);
+
+        public abstract int getBallFromListYValue(int index);
+
+        public abstract int getBoardWidth();
+
+        public abstract int getBoardHeight();
+
         public abstract void updateBalls();
+
         public static LogicApi CreateLogicApi(int maxSpeed, int width, int height)
         {
            return new BallLogic(maxSpeed, width, height);
@@ -125,12 +136,38 @@ namespace Logic
             }
         }
 
+
+        public override Ball getBallFromList(int index)
+        {
+            return Balls[index];
+        }
+
+        public override int getBoardWidth()
+        {
+            return Board.Width;
+        }
+
+        public override int getBoardHeight()
+        {
+            return Board.Height;
+        }
+
         public override void updateBalls()
-        {   
-            for(int i = 0; i < Balls.Count; i++)
+        {
+            for (int i = 0; i < Balls.Count; i++)
             {
                 moveBall(Balls[i]);
             }
+        }
+
+        public override int getBallFromListXVAlue(int index)
+        {
+            return Balls[index].XPosition;
+        }
+
+        public override int getBallFromListYValue(int index)
+        {
+            return Balls[index].YPosition;
         }
     }
 }
