@@ -10,7 +10,7 @@ namespace Logic
 
         public Ball generateBall()
         {
-            return createBall(random.Next(0, _board.getWidth()), random.Next(0, _board.getHeight()));
+            return createBall(random.Next(0, _board.Width), random.Next(0, _board.Height));
         }
 
         public void addBall(Ball ball)
@@ -18,7 +18,7 @@ namespace Logic
             balls.Add(ball);
         }
 
-        public Ball GetBall(int index)
+        public Ball getBall(int index)
         {
             return balls[index];
         }
