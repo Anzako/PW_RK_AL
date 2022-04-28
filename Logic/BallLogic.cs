@@ -25,6 +25,7 @@ namespace Logic
 
         public abstract void moveBall(Ball ball);
 
+        public abstract void updateBalls();
         public static LogicApi CreateLogicApi(int maxSpeed, int width, int height)
         {
            return new BallLogic(maxSpeed, width, height);
@@ -101,7 +102,7 @@ namespace Logic
             else if (ball.XPosition + ball.XVelocity > Board.Width)
             {
                 ball.XPosition = Board.Width;
-
+                setRandomXVelocity(ball, -MaxSpeed, 0);
             }
             else
             {
@@ -111,14 +112,24 @@ namespace Logic
             if (ball.YPosition + ball.YVelocity < 0)
             {
                 ball.YPosition = 0;
+                setRandomYVelocity(ball, 0, MaxSpeed);
             }
             else if (ball.YPosition + ball.YVelocity > Board.Height)
             {
                 ball.YPosition = Board.Height;
+                setRandomYVelocity(ball, -MaxSpeed, 0);
             }
             else
             {
                 ball.YPosition = ball.YPosition + ball.YVelocity;
+            }
+        }
+
+        public override void updateBalls()
+        {   
+            for(int i = 0; i < Balls.Count; i++)
+            {
+                moveBall(Balls[i]);
             }
         }
     }

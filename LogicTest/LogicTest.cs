@@ -6,6 +6,7 @@ namespace LogicTest
 {
     public class Tests
     {
+        /*
         BallLogic ballLogic;
         
 
@@ -61,5 +62,6 @@ namespace LogicTest
             Assert.IsTrue(ballLogic.getBall(3).YPosition <= ballLogic.Board.Height);
             Assert.IsTrue(ballLogic.getBall(3).YPosition >= 0);
         }
+        */
     }
 }
