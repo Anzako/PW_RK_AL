@@ -19,7 +19,7 @@ namespace LogicTest
         [Test]
         public void generateBallTest()
         {
-            var ballTest =  LogicLayerTest.generateBall();
+            var ballTest = LogicLayerTest.generateBall();
             Assert.IsInstanceOf<Ball>(ballTest);
         }
 

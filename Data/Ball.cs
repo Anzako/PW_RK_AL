@@ -1,5 +1,8 @@
-﻿namespace Data
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
+namespace Data
 {
     public class Ball
     {
@@ -14,14 +17,14 @@
             _yPosition = yPosition;
         }
 
-        public int XPosition 
-        { 
-            get { return _xPosition; } 
-            set { _xPosition = value; } 
+        public int XPosition
+        {
+            get { return _xPosition; }
+            set { _xPosition = value; }
         }
-           
-        public int YPosition 
-        { 
+
+        public int YPosition
+        {
             get { return _yPosition; }
             set { _yPosition = value; }
         }
@@ -36,15 +39,6 @@
         {
             get { return _yVelocity; }
             set { _yVelocity = value; }
-        }
-
-        public override bool Equals(object? obj)
-        {
-            return obj is Ball ball &&
-                   _xPosition == ball._xPosition &&
-                   _yPosition == ball._yPosition &&
-                   _xVelocity == ball._xVelocity &&
-                   _yVelocity == ball._yVelocity;
         }
     }
 }

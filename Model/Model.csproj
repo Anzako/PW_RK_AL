@@ -1,15 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="WindowsBase_Core.STW" Version="4.0.30319.1" />
-  </ItemGroup>
-   
   <ItemGroup>
     <ProjectReference Include="..\Logic\Logic.csproj" />
   </ItemGroup>
@@ -21,10 +15,9 @@
     <Reference Include="PresentationFramework">
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\PresentationFramework.dll</HintPath>
     </Reference>
-	<Reference Include="WindowsBase_Core.STW">
-	  <HintPath>C:\Users\Krafi\.nuget\packages\windowsbase_core.stw\4.0.30319.1\lib\net40\WindowsBase.dll</HintPath>
-	</Reference>
+    <Reference Include="WindowsBase">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\WindowsBase.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
-

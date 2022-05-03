@@ -1,15 +1,17 @@
 ﻿using Data;
+using System;
+using System.Collections.Generic;
 
 namespace Logic
 {
     public abstract class LogicApi
     {
-        public abstract int MaxSpeed { get; set; }
+        public abstract int MaxSpeed { get; }
 
         public abstract List<Ball> Balls { get; }
         public abstract Ball generateBall();
 
-        public abstract Board? Board { get; }
+        public abstract Board Board { get; }
 
         public abstract void createBalls(int amount);
 
@@ -39,7 +41,7 @@ namespace Logic
 
         public static LogicApi CreateLogicApi(int maxSpeed, int width, int height)
         {
-           return new BallLogic(maxSpeed, width, height);
+            return new BallLogic(maxSpeed, width, height);
         }
 
     }
@@ -47,15 +49,15 @@ namespace Logic
     {
         private Random _random = new Random();
         public override List<Ball> Balls { get; }
-        public override Board? Board { get; }
+        public override Board Board { get; }
 
         private DataAbstractApi DataL;
 
-        public override int MaxSpeed
-        {
+        public override int MaxSpeed { get; }
+        /*{
             get { return MaxSpeed; }
-            set { MaxSpeed = value; }
-        }
+           // set { MaxSpeed = value; }
+        }*/
 
         public BallLogic(int maxSpeed, int width, int height)
         {
