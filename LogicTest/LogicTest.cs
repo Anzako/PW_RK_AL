@@ -14,6 +14,7 @@ namespace LogicTest
         public void Setup()
         {
             LogicLayerTest = LogicApi.CreateLogicApi(30, 1280, 720);
+
         }
 
         [Test]
@@ -21,6 +22,7 @@ namespace LogicTest
         {
             var ballTest = LogicLayerTest.generateBall();
             Assert.IsInstanceOf<Ball>(ballTest);
+            Assert.AreEqual(1280, LogicLayerTest.getBoardWidth());
         }
 
         [Test]

@@ -8,11 +8,18 @@ namespace ViewModel
     {
         private readonly ModelAbstractApi _modelApi;
         private int _BallVal;
+        private int _width;
+        private int _height;
         private ICommand addCommand;
 
-        public MainWindowViewModel()
+        public MainWindowViewModel() : this(ModelAbstractApi.CreateModelApi(500, 400, 10))
+        { }
+
+        public MainWindowViewModel(ModelAbstractApi modelAbstractApi)
         {
-            _modelApi = ModelAbstractApi.CreateModelApi(100,50,200);   //zmienić 
+            _modelApi = modelAbstractApi;
+            _width = _modelApi.width;
+            _height = _modelApi.height;
             addCommand = new RelayCommand(CreateEllipses);
         }
 
@@ -25,11 +32,22 @@ namespace ViewModel
                 RaisePropertyChanged();
             }
         }
+        
+        public int Height
+        {
+            get { return _height;} 
+        }
+
+        public int Width
+        {
+            get { return _width; }
+        }
 
         public Canvas Canvas
         {
             get => _modelApi.Canvas;
         }
+
         public ICommand AddCommand 
         { 
             get => addCommand; 
@@ -40,5 +58,6 @@ namespace ViewModel
         {
             _modelApi.CreateEllipses(BallVal);
         }
+        
     }
 }

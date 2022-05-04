@@ -11,9 +11,9 @@
         <vm:MainWindowViewModel/>
     </Window.DataContext>
     <Grid>
-        <ContentPresenter Content="{Binding Canvas}"/>
+        <ContentPresenter Content="{Binding Canvas}" Width="{Binding Width}" Height="{Binding Height}" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,60,0,0"/>
 
-        <Border BorderBrush="#FF119A33" BorderThickness="5,5,5,5" Height="480" Width="600" HorizontalAlignment="Center" VerticalAlignment="Top">
+        <Border BorderBrush="#FF119A33" BorderThickness="5,5,5,5" Width="{Binding Width}" Height="{Binding Height}" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,60,0,0">
         </Border>
         <TextBox HorizontalAlignment="Center" Margin="0,514,0,0" TextWrapping="Wrap" Text="{Binding BallVal}"  VerticalAlignment="Top" Width="200" Height="40" TextAlignment="Center" FontSize="24px" BorderBrush="#FF119A33" BorderThickness="3,3,3,3" />
         <Button Margin="50,534,777,10" Content="ADD" FontSize="40" Command="{Binding AddCommand}" ></Button>

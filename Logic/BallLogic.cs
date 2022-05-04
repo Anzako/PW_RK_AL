@@ -1,13 +1,14 @@
 ﻿using Data;
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Logic
 {
     public abstract class LogicApi
     {
         public abstract int MaxSpeed { get; }
-
         public abstract List<Ball> Balls { get; }
         public abstract Ball generateBall();
 
@@ -38,33 +39,37 @@ namespace Logic
         public abstract int getBoardHeight();
 
         public abstract void updateBalls();
-
-        public static LogicApi CreateLogicApi(int maxSpeed, int width, int height)
+        public abstract void Start();
+        public abstract void Stop();
+        public abstract void SetInterval(int ms);
+        public abstract event EventHandler Update;
+        public static LogicApi CreateLogicApi(int maxSpeed, int width, int height, TimerApi timer = default(TimerApi))
         {
-            return new BallLogic(maxSpeed, width, height);
+            return new BallLogic(maxSpeed, width, height, timer ?? TimerApi.CreateBallTimer());
         }
 
     }
     internal class BallLogic : LogicApi
     {
+        private readonly TimerApi timer;
         private Random _random = new Random();
         public override List<Ball> Balls { get; }
         public override Board Board { get; }
 
         private DataAbstractApi DataL;
 
-        public override int MaxSpeed { get; }
-        /*{
-            get { return MaxSpeed; }
-           // set { MaxSpeed = value; }
-        }*/
+        public override event EventHandler Update { add => timer.Tick += value; remove => timer.Tick -= value; }
 
-        public BallLogic(int maxSpeed, int width, int height)
+        public override int MaxSpeed { get; }
+
+        public BallLogic(int maxSpeed, int width, int height, TimerApi WPFTimer)
         {
             DataL = DataAbstractApi.CreateApi();
             MaxSpeed = maxSpeed;
             Balls = new List<Ball>();
             Board = createBoard(width, height);
+            SetInterval(30);
+            timer.Tick += (sender, args) => updateBalls();
         }
 
         public override void addBall(Ball ball)
@@ -82,7 +87,7 @@ namespace Logic
 
         public override Ball generateBall()
         {
-            return new Ball(_random.Next(0, Board.Width), _random.Next(0, Board.Height));
+            return new Ball(_random.Next(5, Board.Width - 25), _random.Next(5, Board.Height - 25));
         }
 
         public override Board createBoard(int width, int height)
@@ -170,6 +175,21 @@ namespace Logic
         public override int getBallFromListYValue(int index)
         {
             return Balls[index].YPosition;
+        }
+
+        public override void Start()
+        {
+            timer.Start();
+        }
+
+        public override void Stop()
+        {
+            timer.Stop();
+        }
+
+        public override void SetInterval(int ms)
+        {
+            timer.Interval = TimeSpan.FromMilliseconds(ms);
         }
     }
 }
