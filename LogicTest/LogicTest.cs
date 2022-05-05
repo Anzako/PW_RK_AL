@@ -12,7 +12,7 @@ namespace LogicTest
         [SetUp]
         public void Setup()
         {
-            LogicLayerTest = LogicApi.CreateLogicApi(10, 500, 400);
+            LogicLayerTest = LogicApi.CreateLogicApi(10, 1280, 720);
         }
 
         [Test]
@@ -20,7 +20,6 @@ namespace LogicTest
         {
            var ballTest = LogicLayerTest.generateBall();
            Assert.IsInstanceOf<Ball>(ballTest);
-           Assert.AreEqual(500, LogicLayerTest.getBoardWidth());
         }
 
         [Test]
@@ -43,7 +42,15 @@ namespace LogicTest
             Assert.IsTrue(LogicLayerTest.getBallFromList(2).XPosition <= LogicLayerTest.getBoardWidth());
             Assert.IsTrue(LogicLayerTest.getBallFromList(2).YPosition >= 0);
             Assert.IsTrue(LogicLayerTest.getBallFromList(2).YPosition <= LogicLayerTest.getBoardHeight());
+        }
 
+        [Test]
+        public void createBoardTest() 
+        {
+            var boardTest = LogicLayerTest.createBoard(10, 10);
+            Assert.IsInstanceOf<Board>(boardTest);
+            Assert.AreEqual(720, LogicLayerTest.getBoardHeight());
+            Assert.AreEqual(1280, LogicLayerTest.getBoardWidth());
         }
     }
 }

@@ -35,9 +35,6 @@ namespace Model
 
         public ModelApi(int Width, int Height, int Speed)
         {
-            //width = Width;
-            //height = Height;
-            //speed = Speed;
             ellipseCollection = new List<Ellipse>();
             _logicApi = LogicApi.CreateLogicApi(Speed, Width, Height);
             Canvas = new Canvas();
@@ -46,7 +43,6 @@ namespace Model
             Canvas.Width = width;
             Canvas.Height = height;
             _logicApi.Update += (sender, args) => Move();
-            //_logicApi.Update += (sender, args) => Move();
         }
 
         public override int width { get { return _logicApi.getBoardWidth(); } }
