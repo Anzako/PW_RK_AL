@@ -15,6 +15,8 @@ namespace Data
         {
             _xPosition = xPosition;
             _yPosition = yPosition;
+            _xVelocity = 2;
+            _yVelocity = 2;
         }
 
         public int XPosition

@@ -21,6 +21,7 @@ namespace ViewModel
             _width = _modelApi.width;
             _height = _modelApi.height;
             addCommand = new RelayCommand(CreateEllipses);
+            StopCommand = new RelayCommand(Stop);
         }
 
         public int BallVal
@@ -54,10 +55,21 @@ namespace ViewModel
             set => addCommand = value; 
         }
 
+        public ICommand StopCommand
+        { 
+            get; 
+            set; 
+        }
+
         private void CreateEllipses()
         {
             _modelApi.CreateEllipses(BallVal);
         }
-        
+
+        private void Stop()
+        {
+            _modelApi.Stop();
+        }
+
     }
 }

@@ -25,6 +25,8 @@ namespace Model
         }
 
         public abstract void Move();
+
+        public abstract void Stop();
     }
 
     internal class ModelApi : ModelAbstractApi
@@ -59,7 +61,7 @@ namespace Model
         public override void CreateEllipses(int numberOfElipses)
         {
             _logicApi.createBalls(numberOfElipses);
-            for (int i = 0; i < _logicApi.getAmountOfBalls(); i++)
+            for (int i = _logicApi.getAmountOfBalls() - numberOfElipses; i < _logicApi.getAmountOfBalls(); i++)
             {
                 Ellipse ellipse = new Ellipse { Width = 20, Height = 20, Fill = Brushes.Black};
                 //Canvas.SetLeft(ellipse, _logicApi.getBallFromListXVAlue(i));
@@ -68,6 +70,7 @@ namespace Model
                 ellipseCollection.Add(ellipse);
                 Canvas.Children.Add(ellipse);
             }
+            _logicApi.Start();
         }
 
         public override void Move()
@@ -84,6 +87,9 @@ namespace Model
             }
         }
 
-       
+        public override void Stop()
+        {
+            _logicApi.Stop();
+        }
     }
 }

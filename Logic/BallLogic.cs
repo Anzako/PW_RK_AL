@@ -8,6 +8,7 @@ namespace Logic
 {
     public abstract class LogicApi
     {
+        public abstract event EventHandler Update;
         public abstract int MaxSpeed { get; }
         public abstract List<Ball> Balls { get; }
         public abstract Ball generateBall();
@@ -42,7 +43,6 @@ namespace Logic
         public abstract void Start();
         public abstract void Stop();
         public abstract void SetInterval(int ms);
-        public abstract event EventHandler Update;
         public static LogicApi CreateLogicApi(int maxSpeed, int width, int height, TimerApi timer = default(TimerApi))
         {
             return new BallLogic(maxSpeed, width, height, timer ?? TimerApi.CreateBallTimer());
@@ -68,6 +68,7 @@ namespace Logic
             MaxSpeed = maxSpeed;
             Balls = new List<Ball>();
             Board = createBoard(width, height);
+            timer = WPFTimer;
             SetInterval(30);
             timer.Tick += (sender, args) => updateBalls();
         }

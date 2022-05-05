@@ -2,7 +2,6 @@ using NUnit.Framework;
 using Logic;
 using Data;
 
-
 namespace LogicTest
 {
     public class Tests
@@ -13,16 +12,15 @@ namespace LogicTest
         [SetUp]
         public void Setup()
         {
-            LogicLayerTest = LogicApi.CreateLogicApi(30, 1280, 720);
-
+            LogicLayerTest = LogicApi.CreateLogicApi(10, 500, 400);
         }
 
         [Test]
         public void generateBallTest()
         {
-            var ballTest = LogicLayerTest.generateBall();
-            Assert.IsInstanceOf<Ball>(ballTest);
-            Assert.AreEqual(1280, LogicLayerTest.getBoardWidth());
+           var ballTest = LogicLayerTest.generateBall();
+           Assert.IsInstanceOf<Ball>(ballTest);
+           Assert.AreEqual(500, LogicLayerTest.getBoardWidth());
         }
 
         [Test]
