@@ -113,34 +113,34 @@ namespace Logic
 
         public override void moveBall(Ball ball)
         {
-            if (ball.XPosition + ball.XVelocity < 0)
+            if (ball.XPosition + ball.XVelocity < 5)
             {
-                ball.XPosition = 0;
-                setRandomXVelocity(ball, 0, MaxSpeed);
+                ball.XPosition = 5;
+                setRandomXVelocity(ball, 1, MaxSpeed);
             }
-            else if (ball.XPosition + ball.XVelocity > Board.Width)
+            else if (ball.XPosition + ball.XVelocity > Board.Width - 25)
             {
-                ball.XPosition = Board.Width;
-                setRandomXVelocity(ball, -MaxSpeed, 0);
+                ball.XPosition = Board.Width - 25;
+                setRandomXVelocity(ball, -MaxSpeed, -1);
             }
             else
             {
-                ball.XPosition = ball.XPosition + ball.XVelocity;
+                ball.XPosition += ball.XVelocity;
             }
 
-            if (ball.YPosition + ball.YVelocity < 0)
+            if (ball.YPosition + ball.YVelocity < 5)
             {
-                ball.YPosition = 0;
-                setRandomYVelocity(ball, 0, MaxSpeed);
+                ball.YPosition = 5;
+                setRandomYVelocity(ball, 1, MaxSpeed);
             }
-            else if (ball.YPosition + ball.YVelocity > Board.Height)
+            else if (ball.YPosition + ball.YVelocity > Board.Height - 25)
             {
-                ball.YPosition = Board.Height;
-                setRandomYVelocity(ball, -MaxSpeed, 0);
+                ball.YPosition = Board.Height - 25;
+                setRandomYVelocity(ball, -MaxSpeed, -1);
             }
             else
             {
-                ball.YPosition = ball.YPosition + ball.YVelocity;
+                ball.YPosition += ball.YVelocity;
             }
         }
 
