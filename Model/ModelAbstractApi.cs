@@ -43,11 +43,13 @@ namespace Model
             Canvas.Width = width;
             Canvas.Height = height;
             _logicApi.Update += (sender, args) => Move();
+            _logicApi.CollisionXEvent += _logicApi.changeXDirection;
+            _logicApi.CollisionYEvent += _logicApi.changeYDirection;
         }
 
-        public override int width { get { return _logicApi.getBoardWidth(); } }
+        public override int width { get { return _logicApi.Width; } }
 
-        public override int height { get { return _logicApi.getBoardHeight(); } }
+        public override int height { get { return _logicApi.Height; } }
 
         public override List<Ellipse> ellipseCollection { get; }
 
@@ -61,8 +63,8 @@ namespace Model
             {
                 Ellipse ellipse = new Ellipse { Width = 20, Height = 20, Fill = Brushes.Black};
                 //Canvas.SetLeft(ellipse, _logicApi.getBallFromListXVAlue(i));
-                Canvas.SetLeft(ellipse, _logicApi.getBallFromListXVAlue(i));
-                Canvas.SetTop(ellipse, _logicApi.getBallFromListYValue(i));
+                Canvas.SetLeft(ellipse, _logicApi.getBall(i).XPosition);
+                Canvas.SetTop(ellipse, _logicApi.getBall(i).YPosition);
                 ellipseCollection.Add(ellipse);
                 Canvas.Children.Add(ellipse);
             }
@@ -73,8 +75,8 @@ namespace Model
         {
             for (int i = 0; i < _logicApi.getAmountOfBalls(); i++)
             {
-                Canvas.SetLeft(ellipseCollection[i], _logicApi.getBallFromListXVAlue(i));
-                Canvas.SetTop(ellipseCollection[i], _logicApi.getBallFromListYValue(i));
+                Canvas.SetLeft(ellipseCollection[i], _logicApi.getBall(i).XPosition);
+                Canvas.SetTop(ellipseCollection[i], _logicApi.getBall(i).YPosition);
             }
             for (int i = _logicApi.getAmountOfBalls(); i < ellipseCollection.Count; i++)
             {

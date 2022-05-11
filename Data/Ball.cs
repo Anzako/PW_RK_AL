@@ -42,5 +42,11 @@ namespace Data
             get { return _yVelocity; }
             set { _yVelocity = value; }
         }
+
+        public void Move()
+        {
+            XPosition += XVelocity;
+            YPosition += YVelocity;
+        }
     }
 }
