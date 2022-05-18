@@ -19,6 +19,7 @@ namespace Data
         public abstract int getBoardWidth();
         public abstract int getBoardHeight();
         public abstract int getAmount();
+        public abstract int GetCount { get; }
         public abstract IBall getBallFromList(int indeks);
         public abstract IList CreateBallsList(int count);
     }
@@ -33,7 +34,7 @@ namespace Data
             ballList = new ObservableCollection<IBall>();
             board = new Board(width, height);
         }
-
+        public ObservableCollection<IBall> Balls => ballList;
         public override int getBoardWidth()
         {
             return board.Width;
@@ -48,6 +49,7 @@ namespace Data
         {
             return ballList[indeks];
         }
+        public override int GetCount { get => ballList.Count; }
         public override int getAmount()
         {
             return ballList.Count;
