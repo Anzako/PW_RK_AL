@@ -1,43 +1,61 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.ComponentModel;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace Data
 {
-    public class Ball
+    public interface IBall : INotifyPropertyChanged
     {
-        private int _xPosition;
-        private int _yPosition;
-        private int _xVelocity;
-        private int _yVelocity;
+        double XPosition { get; set; }
+        double YPosition { get; set; }
+        double XVelocity { get; set; }
+        double YVelocity { get; set; }
 
-        public Ball(int xPosition, int yPosition)
+        void Move();
+        void CreateMovementTask(int interval);
+
+        void Stop();
+    }
+
+
+    public class Ball : IBall
+    {
+        private double _xPosition;
+        private double _yPosition;
+        private double _xVelocity;
+        private double _yVelocity;
+        private readonly Stopwatch stopwatch = new Stopwatch();
+        private Task task;
+        private bool stop = false;
+
+        public Ball(double xPosition, double yPosition, double xVelocity, double yVelocity)
         {
             _xPosition = xPosition;
             _yPosition = yPosition;
-            _xVelocity = 2;
-            _yVelocity = 2;
+            _xVelocity = xVelocity;
+            _yVelocity = yVelocity;
         }
 
-        public int XPosition
+        public double XPosition
         {
             get { return _xPosition; }
-            set { _xPosition = value; }
+            set { _xPosition = value; RaisePropertyChanged(nameof(XPosition)); }
         }
 
-        public int YPosition
+        public double YPosition
         {
             get { return _yPosition; }
-            set { _yPosition = value; }
+            set { _yPosition = value; RaisePropertyChanged(nameof(YPosition)); }
         }
 
-        public int XVelocity
+        public double XVelocity
         {
             get { return _xVelocity; }
             set { _xVelocity = value; }
         }
 
-        public int YVelocity
+        public double YVelocity
         {
             get { return _yVelocity; }
             set { _yVelocity = value; }
@@ -47,6 +65,40 @@ namespace Data
         {
             XPosition += XVelocity;
             YPosition += YVelocity;
+        }
+
+        public void CreateMovementTask(int interval)
+        {
+            stop = false;
+            task = Run(interval);
+        }
+
+        private async Task Run(int interval)
+        {
+            while (!stop)
+            {
+                stopwatch.Reset();
+                stopwatch.Start();
+                if (!stop)
+                {
+                    Move();
+                    RaisePropertyChanged();
+                }
+                stopwatch.Stop();
+
+                await Task.Delay((int)(interval - stopwatch.ElapsedMilliseconds));
+            }
+        }
+        public void Stop()
+        {
+            stop = true;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        internal void RaisePropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
