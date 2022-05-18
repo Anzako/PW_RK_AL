@@ -1,5 +1,5 @@
 ﻿using Model;
-using System.Windows.Controls;
+using System.Collections;
 using System.Windows.Input;
 
 namespace ViewModel 
@@ -7,21 +7,31 @@ namespace ViewModel
     public class MainWindowViewModel : BaseViewModel
     {
         private readonly ModelAbstractApi _modelApi;
-        private int _BallVal;
+        private int _BallVal = 1;
         private int _width;
         private int _height;
-        private ICommand addCommand;
+        private IList _ballsList;
 
-        public MainWindowViewModel() : this(ModelAbstractApi.CreateModelApi(500, 400, 10))
+        private int size = 0;
+        private bool _isStopEnabled = false;
+        private bool _isStartEnabled = false;
+        private bool _isAddEnabled = true;
+
+        public ICommand addCommand { get; set; }
+        public ICommand stopCommand;
+        public ICommand RunCommand { get; set; }
+
+        public MainWindowViewModel() : this(ModelAbstractApi.CreateModelApi(800, 400))
         { }
 
         public MainWindowViewModel(ModelAbstractApi modelAbstractApi)
         {
             _modelApi = modelAbstractApi;
-            _width = _modelApi.width;
-            _height = _modelApi.height;
-            addCommand = new RelayCommand(CreateEllipses);
+            _width = _modelApi.Width;
+            _height = _modelApi.Height;
+            addCommand = new RelayCommand(AddBalls);
             StopCommand = new RelayCommand(Stop);
+            RunCommand = new RelayCommand(Start);
         }
 
         public int BallVal
@@ -33,7 +43,7 @@ namespace ViewModel
                 RaisePropertyChanged();
             }
         }
-        
+
         public int Height
         {
             get { return _height;} 
@@ -42,11 +52,6 @@ namespace ViewModel
         public int Width
         {
             get { return _width; }
-        }
-
-        public Canvas Canvas
-        {
-            get => _modelApi.Canvas;
         }
 
         public ICommand AddCommand 
@@ -61,14 +66,84 @@ namespace ViewModel
             set; 
         }
 
-        private void CreateEllipses()
+        private void AddBalls()
         {
-            _modelApi.CreateEllipses(BallVal);
+            size += BallVal;
+            if (size > 0)
+            {
+                isRunEnabled = true;
+            }
+            else
+            {
+                size = 0;
+                isRunEnabled = false;
+            }
+            _ballsList = _modelApi.Start(BallVal);
+            BallVal = 1;
+
+        }
+
+        public bool isStopEnabled
+        {
+            get { return _isStopEnabled; }
+            set
+            {
+                _isStopEnabled = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool isRunEnabled
+        {
+            get { return _isStartEnabled; }
+            set
+            {
+                _isStartEnabled = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool isAddEnabled
+        {
+            get
+            {
+                return _isAddEnabled;
+            }
+            set
+            {
+                _isAddEnabled = value;
+
+                RaisePropertyChanged();
+            }
         }
 
         private void Stop()
         {
+            isStopEnabled = false;
+            isAddEnabled = true;
+            isRunEnabled = true;
             _modelApi.Stop();
+        }
+        private void Start()
+        {
+            isStopEnabled = true;
+            isRunEnabled = false;
+            isAddEnabled = false;
+            _modelApi.StartMoving();
+        }
+        public IList Balls
+        {
+            get => _ballsList;
+            set
+            {
+                if (value.Equals(_ballsList))
+                {
+                    return;
+                }
+
+                _ballsList = value;
+                RaisePropertyChanged();
+            }
         }
 
     }

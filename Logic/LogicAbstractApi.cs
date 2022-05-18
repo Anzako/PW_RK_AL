@@ -68,12 +68,12 @@ namespace Logic
 
         public override double GetPositionX(int i)
         {
-            throw new NotImplementedException();
+            return DataApi.GetPositionX(i);
         }
 
         public override double GetPositionY(int i)
         {
-            throw new NotImplementedException();
+            return DataApi.GetPositionY(i);
         }
 
         public override IList createBalls(int amount)

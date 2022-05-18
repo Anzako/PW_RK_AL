@@ -5,18 +5,27 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:ViewModel;assembly=ViewModel"
         mc:Ignorable="d"
-        Title="Etap1" Height="720" Width="1280" Background="White" ResizeMode="NoResize">
-            
+        Title="Etap2" Height="720" Width="1280" Background="White" ResizeMode="NoResize">
+
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
     <Grid>
-        <ContentPresenter Content="{Binding Canvas}" Width="{Binding Width}" Height="{Binding Height}" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,60,0,0"/>
-
-        <Border BorderBrush="#FF119A33" BorderThickness="5,5,5,5" Width="{Binding Width}" Height="{Binding Height}" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,60,0,0">
-        </Border>
-        <TextBox HorizontalAlignment="Center" Margin="0,514,0,0" TextWrapping="Wrap" Text="{Binding BallVal}"  VerticalAlignment="Top" Width="200" Height="40" TextAlignment="Center" FontSize="24px" BorderBrush="#FF119A33" BorderThickness="3,3,3,3" />
-        <Button Margin="120,504,895,110" Content="ADD" FontSize="40" Command="{Binding AddCommand}" ></Button>
-        <Button x:Name= "StopButton" Margin="898,505,103,110" Content="STOP" FontSize="40" Command="{Binding StopCommand}"></Button>
+        <Canvas Width="{Binding Width}" Height="{Binding Height}" VerticalAlignment="Top" HorizontalAlignment="Center">
+            <ItemsControl Name="Balls" ItemsSource="{Binding Balls}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Canvas>
+                            <Ellipse Stroke="Red" Fill="Red"  Width="50" Height="50" Canvas.Left="{Binding XPosition}" Canvas.Top="{Binding YPosition}"/>
+                        </Canvas>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Border BorderBrush="#FF119A33" BorderThickness="5,5,5,5" Width="{Binding Width}" Height="{Binding Height}" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="5"/>
+        </Canvas>
+        <TextBox HorizontalAlignment="Center" Margin="0,494,0,0" TextWrapping="Wrap" Text="{Binding BallVal}"  VerticalAlignment="Top" Width="200" Height="35" TextAlignment="Center" FontSize="24px" BorderBrush="#FF119A33" BorderThickness="3,3,3,3" />
+        <Button x:Name= "RunButton" Margin="50,494,530,10" Content="START" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="40" Width="200"   Command="{Binding RunCommand}" IsEnabled="{Binding isRunEnabled}" ></Button>
+        <Button x:Name= "StopButton" Margin="535,494,45,10" Content="STOP" FontSize="40" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="200" Command="{Binding StopCommand}" IsEnabled="{Binding isStopEnabled}"></Button>
+        <Button x:Name= "AddButton" Margin="532,561,532,60" Content="ADD" FontSize="20" Command="{Binding AddCommand}" IsEnabled="{Binding isAddEnabled}"/>
     </Grid>
 </Window>
