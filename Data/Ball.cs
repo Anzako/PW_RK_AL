@@ -11,7 +11,8 @@ namespace Data
         double YPosition { get; set; }
         double XVelocity { get; set; }
         double YVelocity { get; set; }
-
+        double Radius { get; set; }
+        double Weight { get; set; }
         void Move();
         void CreateMovementTask(int interval);
 
@@ -25,16 +26,20 @@ namespace Data
         private double _yPosition;
         private double _xVelocity;
         private double _yVelocity;
+        private double _radius;
+        private double _weight;
         private readonly Stopwatch stopwatch = new Stopwatch();
         private Task task;
         private bool stop = false;
 
-        public Ball(double xPosition, double yPosition, double xVelocity, double yVelocity)
+        public Ball(double xPosition, double yPosition, double xVelocity, double yVelocity, double radius, double weight)
         {
             _xPosition = xPosition;
             _yPosition = yPosition;
             _xVelocity = xVelocity;
             _yVelocity = yVelocity;
+            _radius = radius;
+            _weight = weight;
         }
 
         public double XPosition
@@ -59,6 +64,17 @@ namespace Data
         {
             get { return _yVelocity; }
             set { _yVelocity = value; }
+        }
+
+        public double Radius 
+        { 
+            get { return _radius; }
+            set { _radius = value; }
+        }
+        public double Weight 
+        { 
+            get { return _weight; }
+            set { _weight = value; }
         }
 
         public void Move()

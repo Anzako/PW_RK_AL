@@ -10,6 +10,8 @@ namespace Data
         {
             return new DataApi(width, height);
         }
+        public abstract double GetRadius(int i);
+        public abstract double GetWeight(int i);
         public abstract double GetPositionX(int i);
         public abstract double GetPositionY(int i);
         public abstract double GetVelocityX(int i);
@@ -35,6 +37,14 @@ namespace Data
             board = new Board(width, height);
         }
         public ObservableCollection<IBall> Balls => ballList;
+        public override double GetRadius(int i)
+        {
+            return ballList[i].Radius;
+        }
+        public override double GetWeight(int i)
+        {
+            return ballList[i].Weight;
+        }
         public override int getBoardWidth()
         {
             return board.Width;
@@ -90,13 +100,13 @@ namespace Data
             for (int i = 0; i < count; i++)
             {
                 mutex.WaitOne();
-                //int radius = random.Next(20, 40);
-                //double weight = random.Next(30, 60);
-                double x = random.Next(25, getBoardWidth() - 25);
-                double y = random.Next(25, getBoardHeight() - 25);
+                int radius = random.Next(20, 40);
+                double weight = random.Next(30, 60);
+                double x = random.Next(5, getBoardWidth() - radius - 5);
+                double y = random.Next(5, getBoardHeight() - radius - 5);
                 double VX = random.Next(-10, 10);
                 double VY = random.Next(-10, 10);
-                Ball ball = new Ball(x, y, VX, VY);
+                Ball ball = new Ball(x, y, VX, VY, radius, weight);
 
                 ballList.Add(ball);
                 mutex.ReleaseMutex();

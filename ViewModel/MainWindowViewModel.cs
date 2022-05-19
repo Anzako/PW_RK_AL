@@ -7,7 +7,7 @@ namespace ViewModel
     public class MainWindowViewModel : BaseViewModel
     {
         private readonly ModelAbstractApi _modelApi;
-        private int _BallVal = 1;
+        private int _BallVal;
         private int _width;
         private int _height;
         private IList _ballsList;
@@ -26,6 +26,7 @@ namespace ViewModel
 
         public MainWindowViewModel(ModelAbstractApi modelAbstractApi)
         {
+            BallVal = 0;
             _modelApi = modelAbstractApi;
             _width = _modelApi.Width;
             _height = _modelApi.Height;
@@ -78,9 +79,7 @@ namespace ViewModel
                 size = 0;
                 isRunEnabled = false;
             }
-            _ballsList = _modelApi.Start(BallVal);
-            BallVal = 1;
-
+            Balls = _modelApi.Start(BallVal);
         }
 
         public bool isStopEnabled

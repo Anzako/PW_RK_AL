@@ -12,17 +12,19 @@
     </Window.DataContext>
     <Grid>
         <Canvas Width="{Binding Width}" Height="{Binding Height}" VerticalAlignment="Top" HorizontalAlignment="Center">
-            <ItemsControl Name="Balls" ItemsSource="{Binding Balls}">
+            <ItemsControl Name="Balls" ItemsSource="{Binding Balls, UpdateSourceTrigger=PropertyChanged}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Canvas>
-                            <Ellipse Stroke="Red" Fill="Red"  Width="50" Height="50" Canvas.Left="{Binding XPosition}" Canvas.Top="{Binding YPosition}"/>
+                            <Ellipse Stroke="Red" Fill="Red"  Width="{Binding Radius}" Height="{Binding Radius}" Canvas.Left="{Binding XPosition}" Canvas.Top="{Binding YPosition}"/>
                         </Canvas>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <Border BorderBrush="#FF119A33" BorderThickness="5,5,5,5" Width="{Binding Width}" Height="{Binding Height}" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="5"/>
+            
+            <Border BorderBrush="#FF119A33" BorderThickness="5,5,5,5" Width="{Binding Width}" Height="{Binding Height}" HorizontalAlignment="Left" VerticalAlignment="Top" />
         </Canvas>
+        
         <TextBox HorizontalAlignment="Center" Margin="0,494,0,0" TextWrapping="Wrap" Text="{Binding BallVal}"  VerticalAlignment="Top" Width="200" Height="35" TextAlignment="Center" FontSize="24px" BorderBrush="#FF119A33" BorderThickness="3,3,3,3" />
         <Button x:Name= "RunButton" Margin="50,494,530,10" Content="START" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="40" Width="200"   Command="{Binding RunCommand}" IsEnabled="{Binding isRunEnabled}" ></Button>
         <Button x:Name= "StopButton" Margin="535,494,45,10" Content="STOP" FontSize="40" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="200" Command="{Binding StopCommand}" IsEnabled="{Binding isStopEnabled}"></Button>
