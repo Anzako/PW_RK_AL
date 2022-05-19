@@ -26,8 +26,8 @@
         </Canvas>
 
         <TextBox HorizontalAlignment="Center" Margin="0,494,0,0" TextWrapping="Wrap" Text="{Binding BallVal}"  VerticalAlignment="Top" Width="200" Height="35" TextAlignment="Center" FontSize="24px" BorderBrush="DarkBlue" BorderThickness="3,3,3,3" />
-        <Button x:Name= "RunButton" Margin="36,444,998,60" Content="START" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="40"   Command="{Binding RunCommand}" IsEnabled="{Binding isRunEnabled}" />
-        <Button x:Name= "StopButton" Margin="978,444,40,60" Content="STOP" FontSize="40" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Command="{Binding StopCommand}" IsEnabled="{Binding isStopEnabled}"/>
-        <Button x:Name= "AddButton" Margin="532,561,532,60" Content="ADD" FontSize="20" Command="{Binding AddCommand}" IsEnabled="{Binding isAddEnabled}"/>
+        <Button x:Name= "RunButton" Margin="36,444,998,60" Content="START" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="40"   Command="{Binding RunCommand}" IsEnabled="{Binding isRun}" />
+        <Button x:Name= "StopButton" Margin="978,444,40,60" Content="STOP" FontSize="40" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Command="{Binding StopCommand}" IsEnabled="{Binding isStop}"/>
+        <Button x:Name= "AddButton" Margin="532,561,532,60" Content="ADD" FontSize="20" Command="{Binding AddCommand}" IsEnabled="{Binding isAdd}"/>
     </Grid>
 </Window>
