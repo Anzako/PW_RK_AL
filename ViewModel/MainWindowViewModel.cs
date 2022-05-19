@@ -13,9 +13,9 @@ namespace ViewModel
         private IList _ballsList;
 
         private int size = 0;
-        private bool _isStopEnabled = false;
-        private bool _isStartEnabled = false;
-        private bool _isAddEnabled = true;
+        private bool _isStop = false;
+        private bool _isStart = false;
+        private bool _isAdd = true;
 
         public ICommand addCommand { get; set; }
         public ICommand stopCommand;
@@ -72,45 +72,45 @@ namespace ViewModel
             size += BallVal;
             if (size > 0)
             {
-                isRunEnabled = true;
+                isRun = true;
             }
             else
             {
                 size = 0;
-                isRunEnabled = false;
+                isRun = false;
             }
             Balls = _modelApi.Start(BallVal);
         }
 
-        public bool isStopEnabled
+        public bool isStop
         {
-            get { return _isStopEnabled; }
+            get { return _isStop; }
             set
             {
-                _isStopEnabled = value;
+                _isStop = value;
                 RaisePropertyChanged();
             }
         }
 
-        public bool isRunEnabled
+        public bool isRun
         {
-            get { return _isStartEnabled; }
+            get { return _isStart; }
             set
             {
-                _isStartEnabled = value;
+                _isStart = value;
                 RaisePropertyChanged();
             }
         }
 
-        public bool isAddEnabled
+        public bool isAdd
         {
             get
             {
-                return _isAddEnabled;
+                return _isAdd;
             }
             set
             {
-                _isAddEnabled = value;
+                _isAdd = value;
 
                 RaisePropertyChanged();
             }
@@ -118,16 +118,16 @@ namespace ViewModel
 
         private void Stop()
         {
-            isStopEnabled = false;
-            isAddEnabled = true;
-            isRunEnabled = true;
+            isStop = false;
+            isAdd = true;
+            isRun = true;
             _modelApi.Stop();
         }
         private void Start()
         {
-            isStopEnabled = true;
-            isRunEnabled = false;
-            isAddEnabled = false;
+            isStop = true;
+            isRun = false;
+            isAdd = false;
             _modelApi.StartMoving();
         }
         public IList Balls

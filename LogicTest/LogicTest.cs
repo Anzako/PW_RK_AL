@@ -1,58 +1,57 @@
 using NUnit.Framework;
 using Logic;
-using Data;
+using System.Collections;
+using System.Threading;
 
 namespace LogicTest
 {
     public class Tests
     {
-
-        //LogicApi LogicLayerTest;
+        private LogicAbstractApi _api;
 
         [SetUp]
         public void Setup()
         {
-            //LogicLayerTest = LogicApi.CreateLogicApi(10, 1280, 720);
+            _api = LogicAbstractApi.CreateLogicApi(800, 600);
         }
 
         [Test]
-        public void generateBallTest()
+        public void ListTest()
         {
-           //var ballTest = LogicLayerTest.generateBall();
-           //Assert.IsInstanceOf<Ball>(ballTest);
+            Assert.IsInstanceOf<IList>(_api.createBalls(4));
+            Assert.AreEqual(_api.GetCount, 4);
+            Assert.AreEqual(_api.getAmountOfBalls(), 4);
         }
 
         [Test]
-        public void createBallsTest()
+        public void GetterTest()
         {
-            //LogicLayerTest.createBalls(3);
-            //Assert.AreEqual(3, LogicLayerTest.getAmountOfBalls());
-            /*
-            Assert.IsTrue(LogicLayerTest.getBallFromList(0).XPosition >= 0);
-            Assert.IsTrue(LogicLayerTest.getBallFromList(0).XPosition <= LogicLayerTest.getBoardWidth());
-            Assert.IsTrue(LogicLayerTest.getBallFromList(0).YPosition >= 0);
-            Assert.IsTrue(LogicLayerTest.getBallFromList(0).YPosition <= LogicLayerTest.getBoardHeight());
+            Assert.AreEqual(_api.Width, 800);
+            Assert.AreEqual(_api.Height, 600);
 
-            Assert.IsTrue(LogicLayerTest.getBallFromList(1).XPosition >= 0);
-            Assert.IsTrue(LogicLayerTest.getBallFromList(1).XPosition <= LogicLayerTest.getBoardWidth());
-            Assert.IsTrue(LogicLayerTest.getBallFromList(1).YPosition >= 0);
-            Assert.IsTrue(LogicLayerTest.getBallFromList(1).YPosition <= LogicLayerTest.getBoardHeight());
-
-            Assert.IsTrue(LogicLayerTest.getBallFromList(2).XPosition >= 0);
-            Assert.IsTrue(LogicLayerTest.getBallFromList(2).XPosition <= LogicLayerTest.getBoardWidth());
-            Assert.IsTrue(LogicLayerTest.getBallFromList(2).YPosition >= 0);
-            Assert.IsTrue(LogicLayerTest.getBallFromList(2).YPosition <= LogicLayerTest.getBoardHeight());
-            */
+            for (int i = 0; i < _api.getAmountOfBalls(); i++)
+            {
+                Assert.IsTrue(_api.GetPositionX(i) > 0);
+                Assert.IsTrue(_api.GetPositionY(i) > 0);
+                Assert.IsTrue(_api.GetPositionX(i) < _api.Width);
+                Assert.IsTrue(_api.GetPositionY(i) > _api.Height);
+            }
         }
 
         [Test]
-        public void createBoardTest() 
+        public void StartStopTest()
         {
-            //var boardTest = LogicLayerTest.createBoard(10, 10);
-            //Assert.IsInstanceOf<Board>(boardTest);
-            //Assert.AreEqual(720, LogicLayerTest.getBoardHeight());
-            //Assert.AreEqual(1280, LogicLayerTest.getBoardWidth());
+            _api.createBalls(1);
+            double X = _api.GetPositionX(0);
+            double Y = _api.GetPositionY(0);
+
+            _api.Start();
+            Thread.Sleep(1000);
+            _api.Stop();
+
+            Assert.AreNotEqual(X, _api.GetPositionX(0));
+            Assert.AreNotEqual(Y, _api.GetPositionY(0));
         }
-            
+
     }
 }

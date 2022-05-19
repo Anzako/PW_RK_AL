@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:ViewModel;assembly=ViewModel"
         mc:Ignorable="d"
-        Title="Etap2" Height="720" Width="1280" Background="White" ResizeMode="NoResize">
+        Title="Etap2" Height="720" Width="1280" Background="Lavender" ResizeMode="NoResize">
 
     <Window.DataContext>
         <vm:MainWindowViewModel/>
@@ -16,18 +16,18 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Canvas>
-                            <Ellipse Stroke="Red" Fill="Red"  Width="{Binding Radius}" Height="{Binding Radius}" Canvas.Left="{Binding XPosition}" Canvas.Top="{Binding YPosition}"/>
+                            <Ellipse Stroke="DarkMagenta" Fill="DarkMagenta"  Width="{Binding Radius}" Height="{Binding Radius}" Canvas.Left="{Binding XPosition}" Canvas.Top="{Binding YPosition}"/>
                         </Canvas>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            
-            <Border BorderBrush="#FF119A33" BorderThickness="5,5,5,5" Width="{Binding Width}" Height="{Binding Height}" HorizontalAlignment="Left" VerticalAlignment="Top" />
+
+            <Border BorderBrush="DarkBlue" BorderThickness="5,5,5,5" Width="{Binding Width}" Height="{Binding Height}" HorizontalAlignment="Left" VerticalAlignment="Top" />
         </Canvas>
-        
-        <TextBox HorizontalAlignment="Center" Margin="0,494,0,0" TextWrapping="Wrap" Text="{Binding BallVal}"  VerticalAlignment="Top" Width="200" Height="35" TextAlignment="Center" FontSize="24px" BorderBrush="#FF119A33" BorderThickness="3,3,3,3" />
-        <Button x:Name= "RunButton" Margin="50,494,530,10" Content="START" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="40" Width="200"   Command="{Binding RunCommand}" IsEnabled="{Binding isRunEnabled}" ></Button>
-        <Button x:Name= "StopButton" Margin="535,494,45,10" Content="STOP" FontSize="40" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="200" Command="{Binding StopCommand}" IsEnabled="{Binding isStopEnabled}"></Button>
+
+        <TextBox HorizontalAlignment="Center" Margin="0,494,0,0" TextWrapping="Wrap" Text="{Binding BallVal}"  VerticalAlignment="Top" Width="200" Height="35" TextAlignment="Center" FontSize="24px" BorderBrush="DarkBlue" BorderThickness="3,3,3,3" />
+        <Button x:Name= "RunButton" Margin="36,444,998,60" Content="START" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="40"   Command="{Binding RunCommand}" IsEnabled="{Binding isRunEnabled}" />
+        <Button x:Name= "StopButton" Margin="978,444,40,60" Content="STOP" FontSize="40" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Command="{Binding StopCommand}" IsEnabled="{Binding isStopEnabled}"/>
         <Button x:Name= "AddButton" Margin="532,561,532,60" Content="ADD" FontSize="20" Command="{Binding AddCommand}" IsEnabled="{Binding isAddEnabled}"/>
     </Grid>
 </Window>
