@@ -14,7 +14,7 @@ namespace LogicTest
         {
             _api = LogicAbstractApi.CreateLogicApi(800, 600);
         }
-
+        /*
         [Test]
         public void ListTest()
         {
@@ -52,6 +52,6 @@ namespace LogicTest
             Assert.AreNotEqual(X, _api.GetPositionX(0));
             Assert.AreNotEqual(Y, _api.GetPositionY(0));
         }
-
+        */
     }
 }

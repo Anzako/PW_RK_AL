@@ -1,6 +1,13 @@
 using NUnit.Framework;
 using Data;
+using System;
 using System.Collections;
+using System.Diagnostics;
+using System.IO;
+using System.Text.Json;
+using System.Runtime.Serialization;
+using System.Timers;
+using System.Threading.Tasks;
 
 namespace DataTest
 {
@@ -13,10 +20,21 @@ namespace DataTest
         {
             _api = DataAbstractApi.CreateApi(800, 600);
         }
-
+        private static void OnTimedEvent(Object source, ElapsedEventArgs e)
+        {
+            Console.WriteLine("DUPA");
+            throw new NotImplementedException();
+        }
         [Test]
         public void BallTest()
         {
+            Timer timer = new Timer(5);
+            timer.Elapsed += OnTimedEvent;
+            timer.Enabled = true;
+            timer.AutoReset = true; 
+            timer.Start();
+            int delat = 0;
+
             Ball testBall = new Ball(50,50,20,20,30,30);
             Assert.IsInstanceOf<Ball>(testBall);
             Assert.AreEqual(testBall.XPosition, 50);
@@ -27,10 +45,18 @@ namespace DataTest
 
             Assert.AreEqual(testBall.Radius, 30);
             Assert.AreEqual(testBall.Weight, 30);
-
+            /*
             testBall.Move();
+            for(int i = 0; i < 100; i++)
+            {
+                delat++;
+            }
+
             Assert.AreEqual(testBall.XPosition, 70);
             Assert.AreEqual(testBall.YPosition, 70);
+            */
+            
+            Console.WriteLine("Press key");
         }
 
         [Test]
@@ -39,7 +65,7 @@ namespace DataTest
             Assert.AreEqual(_api.getBoardWidth(), 800);
             Assert.AreEqual(_api.getBoardHeight(), 600);
         }
-
+        /*
         [Test]
         public void BallsListTest()
         {
@@ -69,5 +95,6 @@ namespace DataTest
             Assert.IsTrue(_api.GetVelocityX(0) == 30);
             Assert.IsTrue(_api.GetVelocityY(0) == 50);
         }
+        */
     }
 }

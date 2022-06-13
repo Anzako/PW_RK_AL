@@ -1,21 +1,23 @@
 ﻿using System.ComponentModel;
+using System.Collections.Concurrent;
+using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 
 namespace Data
 {
     public interface IBall : INotifyPropertyChanged
     {
-        double XPosition { get; set; }
-        double YPosition { get; set; }
-        double XVelocity { get; set; }
-        double YVelocity { get; set; }
-        double Radius { get; set; }
-        double Weight { get; set; }
-        void Move();
-        void CreateMovementTask(int interval);
-
+        double XPosition { get; }
+        double YPosition { get; }
+        double XVelocity { get; }
+        double YVelocity { get; }
+        double Radius { get; }
+        double Weight { get; }
+        void changeVelocity(double XV, double YV);
+        void Move(double time, ConcurrentQueue<IBall> queue);
+        Task CreateMovementTask(int interval, ConcurrentQueue<IBall> queue);
+        void SaveRequest(ConcurrentQueue<IBall> queue);
         void Stop();
     }
 
@@ -26,12 +28,13 @@ namespace Data
         private double _yPosition;
         private double _xVelocity;
         private double _yVelocity;
-        private double _radius;
-        private double _weight;
-        private readonly Stopwatch stopwatch = new Stopwatch();
-        private Task task;
-        private bool stop = false;
+        private readonly double _radius;
+        private readonly double _weight;
+        private readonly Stopwatch stopwatch;
+        private bool stop;
+        private readonly object locker = new object();
 
+        public event PropertyChangedEventHandler PropertyChanged;
         public Ball(double xPosition, double yPosition, double xVelocity, double yVelocity, double radius, double weight)
         {
             _xPosition = xPosition;
@@ -40,23 +43,34 @@ namespace Data
             _yVelocity = yVelocity;
             _radius = radius;
             _weight = weight;
+            stop = false;
+            stopwatch = new Stopwatch();
         }
 
         public double XPosition
         {
-            get { return _xPosition; }
-            set { _xPosition = value; RaisePropertyChanged(nameof(XPosition)); }
+            get 
+            {
+                lock (locker) return _xPosition; 
+            }
+            set { _xPosition = value; }
         }
 
         public double YPosition
         {
-            get { return _yPosition; }
-            set { _yPosition = value; RaisePropertyChanged(nameof(YPosition)); }
+            get 
+            { 
+                lock (locker) return _yPosition; 
+            }
+            set { _yPosition = value; }
         }
 
         public double XVelocity
         {
-            get { return _xVelocity; }
+            get 
+            { 
+                lock (locker) return _xVelocity; 
+            }
             set { _xVelocity = value; }
         }
 
@@ -67,29 +81,42 @@ namespace Data
         }
 
         public double Radius 
-        { 
+        {
             get { return _radius; }
-            set { _radius = value; }
         }
         public double Weight 
         { 
             get { return _weight; }
-            set { _weight = value; }
         }
 
-        public void Move()
+        public void changeVelocity(double XV, double YV)
         {
-            XPosition += XVelocity;
-            YPosition += YVelocity;
+            lock (locker)
+            {
+                XVelocity = XV;
+                YVelocity = YV;
+            }
         }
 
-        public void CreateMovementTask(int interval)
+        public void Move(double time, ConcurrentQueue<IBall> queue)
+        {
+            lock (locker)
+            {
+                XPosition += XVelocity * time;
+                YPosition += YVelocity * time;
+                RaisePropertyChanged(nameof(XPosition));
+                RaisePropertyChanged(nameof(YPosition));
+                SaveRequest(queue);
+            }
+        }
+
+        public Task CreateMovementTask(int interval, ConcurrentQueue<IBall> queue)
         {
             stop = false;
-            task = Run(interval);
+            return Run(interval, queue);
         }
 
-        private async Task Run(int interval)
+        private async Task Run(int interval, ConcurrentQueue<IBall> queue)
         {
             while (!stop)
             {
@@ -97,11 +124,10 @@ namespace Data
                 stopwatch.Start();
                 if (!stop)
                 {
-                    Move();
-                    RaisePropertyChanged();
+                    Move(((interval - stopwatch.ElapsedMilliseconds) / 16), queue);
                 }
                 stopwatch.Stop();
-
+                
                 await Task.Delay((int)(interval - stopwatch.ElapsedMilliseconds));
             }
         }
@@ -110,7 +136,10 @@ namespace Data
             stop = true;
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public void SaveRequest(ConcurrentQueue<IBall> queue)
+        {
+            queue.Enqueue(new Ball(XPosition, YPosition, XVelocity, YVelocity, Radius, Weight));
+        }
 
         internal void RaisePropertyChanged([CallerMemberName] string propertyName = null)
         {

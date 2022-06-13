@@ -1,7 +1,10 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.ObjectModel;
-using System.Threading;
+using System.Diagnostics;
+using System.IO;
+using System.Text.Json;
+using System.Collections.Concurrent;
+using System.Threading.Tasks;
+
 namespace Data
 {
     public abstract class DataAbstractApi
@@ -10,40 +13,106 @@ namespace Data
         {
             return new DataApi(width, height);
         }
-        public abstract double GetRadius(int i);
-        public abstract double GetWeight(int i);
-        public abstract double GetPositionX(int i);
-        public abstract double GetPositionY(int i);
-        public abstract double GetVelocityX(int i);
-        public abstract double GetVelocityY(int i);
-        public abstract void SetVelocityX(int i, double value);
-        public abstract void SetVelocityY(int i, double value);
         public abstract int getBoardWidth();
         public abstract int getBoardHeight();
-        public abstract int getAmount();
-        public abstract int GetCount { get; }
-        public abstract IBall getBallFromList(int indeks);
-        public abstract IList CreateBallsList(int count);
+        public abstract IBall CreateBall();
+        public abstract Task CreateLoggingTask(ConcurrentQueue<IBall> logQueue);
+        public abstract void AppendObjectToJSONFile(string filename, string newJsonObject);
     }
     internal class DataApi : DataAbstractApi
     {
-        private readonly Mutex mutex = new Mutex();
         private readonly Random random = new Random();
+        private readonly Stopwatch stopwatch;
         private Board board;
-        private ObservableCollection<IBall> ballList { get; }
+        private bool newSession;
+        private bool stop;
+        private readonly string logPath = "Log.json";
+
+        public override Task CreateLoggingTask(ConcurrentQueue<IBall> logQueue)
+        {
+            stop = false;
+            return CallLogger(logQueue);
+        }
+
+        internal async Task CallLogger(ConcurrentQueue<IBall> logQueue)
+        {
+            FileMaker(logPath);
+            string diagnostics;
+            string date;
+            string log;
+            while (!stop)
+            {
+                stopwatch.Reset();
+                stopwatch.Start();
+                logQueue.TryDequeue(out IBall logObject);
+                if (logObject != null)
+                {
+                    diagnostics = JsonSerializer.Serialize(logObject);
+                    date = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss.fff");
+                    log = "{" + String.Format("\n\t\"Date\": \"{0}\",\n\t\"Info\":{1}\n", date, diagnostics) + "}";
+
+                    lock (this)
+                    {
+                        File.AppendAllText(logPath, log);
+                    }
+                }
+                else
+                {
+                    return;
+                }
+                stopwatch.Stop();
+                await Task.Delay((int)(stopwatch.ElapsedMilliseconds));
+            }
+        }
+
+        public override void AppendObjectToJSONFile(string filename, string newJsonObject)
+        {
+
+
+
+            using (StreamWriter sw = new StreamWriter(filename, true))
+            {
+                sw.WriteLine("[]");
+            }
+
+            string content;
+            using (StreamReader sr = File.OpenText(filename))
+            {
+                content = sr.ReadToEnd();
+            }
+
+            content = content.TrimEnd();
+            content = content.Remove(content.Length - 1, 1);
+
+            if (content.Length == 1)
+            {
+                content = String.Format("{0}\n{1}\n]\n", content.Trim(), newJsonObject);
+            }
+            else
+            {
+                content = String.Format("{0},\n{1}\n]\n", content.Trim(), newJsonObject);
+            }
+
+            using (StreamWriter sw = File.CreateText(filename))
+            {
+                sw.Write(content);
+            }
+        }
+
+        internal void FileMaker(string filename)
+        {
+            if (File.Exists(filename) && newSession)
+            {
+                newSession = false;
+                File.Delete(filename);
+            }
+        }
+
         public DataApi(int width, int height)
         {
-            ballList = new ObservableCollection<IBall>();
             board = new Board(width, height);
-        }
-        public ObservableCollection<IBall> Balls => ballList;
-        public override double GetRadius(int i)
-        {
-            return ballList[i].Radius;
-        }
-        public override double GetWeight(int i)
-        {
-            return ballList[i].Weight;
+            newSession = true;
+            stopwatch = new Stopwatch();
         }
         public override int getBoardWidth()
         {
@@ -55,63 +124,20 @@ namespace Data
             return board.Height;
         }
 
-        public override IBall getBallFromList(int indeks)
+        public override IBall CreateBall()
         {
-            return ballList[indeks];
-        }
-        public override int GetCount { get => ballList.Count; }
-        public override int getAmount()
-        {
-            return ballList.Count;
+            int radius = random.Next(20, 40);
+            double weight = radius;  
+            double X = random.Next(5, getBoardWidth() - radius - 5);
+            double Y = random.Next(5, getBoardHeight() - radius - 5);
+            double XV = random.Next(-10, 10);
+            double YV = random.Next(-10, 10);
+            
+            Ball ball = new Ball(X, Y, XV, YV, radius, weight);
+
+            return ball;
         }
 
-        public override double GetPositionX(int i)
-        {
-            return ballList[i].XPosition;
-        }
-
-        public override double GetPositionY(int i)
-        {
-            return ballList[i].YPosition;
-        }
-
-        public override double GetVelocityX(int i)
-        {
-            return ballList[i].XVelocity;
-        }
-
-        public override double GetVelocityY(int i)
-        {
-            return ballList[i].YVelocity;
-        }
-
-        public override void SetVelocityX(int i, double value)
-        {
-            ballList[i].XVelocity = value;
-        }
-
-        public override void SetVelocityY(int i, double value)
-        {
-            ballList[i].YVelocity = value;
-        }
-
-        public override IList CreateBallsList(int count)
-        {
-            for (int i = 0; i < count; i++)
-            {
-                mutex.WaitOne();
-                int radius = random.Next(20, 40);
-                double weight = random.Next(30, 60);
-                double x = random.Next(5, getBoardWidth() - radius - 5);
-                double y = random.Next(5, getBoardHeight() - radius - 5);
-                double VX = random.Next(-10, 10);
-                double VY = random.Next(-10, 10);
-                Ball ball = new Ball(x, y, VX, VY, radius, weight);
-
-                ballList.Add(ball);
-                mutex.ReleaseMutex();
-            }
-            return ballList;
-        }
+     
     }
 }

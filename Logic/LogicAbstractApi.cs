@@ -3,6 +3,9 @@ using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Threading;
+using System.Collections.Concurrent;
+using System.ComponentModel;
+using System.Collections.ObjectModel;
 
 namespace Logic
 {
@@ -10,11 +13,7 @@ namespace Logic
     {
         public abstract int Width { get; }
         public abstract int Height { get; }
-        public abstract double GetPositionX(int i);
-        public abstract double GetPositionY(int i);
         public abstract IList createBalls(int amount);
-        public abstract int getAmountOfBalls();
-        public abstract int GetCount { get; }
         public abstract void Start();
         public abstract void Stop();
         
@@ -26,102 +25,94 @@ namespace Logic
     internal class BallLogic : LogicAbstractApi
     {
         private DataAbstractApi DataApi;
-        private readonly Mutex mutex = new Mutex();
-
-        public override int Width
-        {
-            get { return DataApi.getBoardWidth(); }
-        }
-
-        public override int Height
-        {
-            get { return DataApi.getBoardHeight(); }
-        }
-
-        public override int GetCount { get => DataApi.GetCount; }
+        private ObservableCollection<IBall> balls { get; }
+        private readonly ConcurrentQueue<IBall> queue;
+  
+        public override int Width { get; }
+        public override int Height { get; }
+      
+       
 
         public BallLogic(int width, int height)
         {
             DataApi = DataAbstractApi.CreateApi(width, height);
-        }
-        public override int getAmountOfBalls()
-        {
-            return DataApi.getAmount();
+            Width = width;
+            Height = height;
+            balls = new ObservableCollection<IBall>();
+            queue = new ConcurrentQueue<IBall>();
         }
 
         public override void Start()
         {
-            for (int i = 0; i < DataApi.GetCount; i++)
+            for (int i = 0; i < balls.Count; i++)
             {
-                DataApi.getBallFromList(i).CreateMovementTask(30);
+                balls[i].PropertyChanged += BallPositionChanged;
+                balls[i].CreateMovementTask(30, queue);
             }
+            DataApi.CreateLoggingTask(queue);
         }
 
         public override void Stop()
         {
-            for (int i = 0; i < DataApi.GetCount; i++)
+            for (int i = 0; i < balls.Count; i++)
             {
-                DataApi.getBallFromList(i).Stop();
-
+                balls[i].Stop();
+                balls[i].PropertyChanged -= BallPositionChanged;
             }
-        }
-
-        public override double GetPositionX(int i)
-        {
-            return DataApi.GetPositionX(i);
-        }
-
-        public override double GetPositionY(int i)
-        {
-            return DataApi.GetPositionY(i);
         }
 
         public override IList createBalls(int amount)
         {
-            int previousCount = DataApi.GetCount;
-            IList temp = DataApi.CreateBallsList(amount);
-            for (int i = 0; i < DataApi.GetCount - previousCount; i++)
+            int actualNumberOfBalls = balls.Count;
+
+            for (int i = actualNumberOfBalls; i < actualNumberOfBalls + amount; i++)
             {
-                DataApi.getBallFromList(previousCount + i).PropertyChanged += BallPositionChanged;
+                balls.Add(DataApi.CreateBall());
             }
-            return temp;
+            return balls;
         }
 
         public void BallPositionChanged(object sender, PropertyChangedEventArgs args)
         {
             IBall ball = (IBall)sender;
-            mutex.WaitOne();
             WallCollision(ball);
             BallBounce(ball);
-            mutex.ReleaseMutex();
         }
 
         internal void WallCollision(IBall ball)
         {
-
             double diameter = ball.Radius;
-
             double right = Width - diameter;
-
             double down = Height - diameter;
 
-
             if (ball.XPosition <= 5)
-            {
-                ball.XVelocity *= -1;
+            { 
+                if (ball.XVelocity <= 0)
+                {
+                    ball.changeVelocity(-ball.XVelocity, ball.YVelocity);
+                }
             }
             else if (ball.XPosition >= right - 5)
             {
-                ball.XVelocity *= -1;
+                if (ball.XVelocity > 0)
+                {
+                    ball.changeVelocity(-ball.XVelocity, ball.YVelocity);
+                }     
             }
 
             if (ball.YPosition <= 5)
             {
-                ball.YVelocity *= -1;
+                if (ball.YVelocity <= 0)
+                {
+                    ball.changeVelocity(ball.XVelocity, -ball.YVelocity);
+                }   
             }
             else if (ball.YPosition >= down - 5)
             {
-                ball.YVelocity *= -1;
+                if (ball.YVelocity > 0)
+                {
+                    ball.changeVelocity(ball.XVelocity, -ball.YVelocity);
+                }
             }
         }
 
@@ -146,40 +137,40 @@ namespace Logic
 
         internal void BallBounce(IBall ball)
         {
-            for (int i = 0; i < DataApi.GetCount; i++)
+            lock (ball)
             {
-                IBall secondBall = DataApi.getBallFromList(i);
-                if (ball == secondBall)
+                for (int i = 0; i < balls.Count; i++)
                 {
-                    continue;
-                }
+                    IBall secondBall = balls[i];
+                    if (ball == secondBall)
+                    {
+                        continue;
+                    }
 
-                if (Collision(ball, secondBall))
-                {
+                    if (Collision(ball, secondBall))
+                    {
+                        double m1 = ball.Weight;
+                        double m2 = secondBall.Weight;
+                        double v1x = ball.XVelocity;
+                        double v1y = ball.YVelocity;
+                        double v2x = secondBall.XVelocity;
+                        double v2y = secondBall.YVelocity;
 
-                    double m1 = ball.Weight;
-                    double m2 = secondBall.Weight;
-                    double v1x = ball.XVelocity;
-                    double v1y = ball.YVelocity;
-                    double v2x = secondBall.XVelocity;
-                    double v2y = secondBall.YVelocity;
+                        double u1x = (m1 - m2) * v1x / (m1 + m2) + (2 * m2) * v2x / (m1 + m2);
+                        double u1y = (m1 - m2) * v1y / (m1 + m2) + (2 * m2) * v2y / (m1 + m2);
 
+                        double u2x = 2 * m1 * v1x / (m1 + m2) + (m2 - m1) * v2x / (m1 + m2);
+                        double u2y = 2 * m1 * v1y / (m1 + m2) + (m2 - m1) * v2y / (m1 + m2);
 
+                        ball.changeVelocity(u1x, u1y);
+                        secondBall.changeVelocity(u2x, u2y);
+                        
+                        return;
 
-                    double u1x = (m1 - m2) * v1x / (m1 + m2) + (2 * m2) * v2x / (m1 + m2);
-                    double u1y = (m1 - m2) * v1y / (m1 + m2) + (2 * m2) * v2y / (m1 + m2);
-
-                    double u2x = 2 * m1 * v1x / (m1 + m2) + (m2 - m1) * v2x / (m1 + m2);
-                    double u2y = 2 * m1 * v1y / (m1 + m2) + (m2 - m1) * v2y / (m1 + m2);
-
-                    ball.XVelocity = u1x;
-                    ball.YVelocity = u1y;
-                    secondBall.XVelocity = u2x;
-                    secondBall.YVelocity = u2y;
-                    return;
-
+                    }
                 }
             }
+            
         }
     }
 }
