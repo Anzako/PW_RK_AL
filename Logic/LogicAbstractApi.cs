@@ -30,8 +30,7 @@ namespace Logic
   
         public override int Width { get; }
         public override int Height { get; }
-      
-       
+
 
         public BallLogic(int width, int height)
         {
@@ -64,10 +63,23 @@ namespace Logic
         public override IList createBalls(int amount)
         {
             int actualNumberOfBalls = balls.Count;
-
+         
+         
             for (int i = actualNumberOfBalls; i < actualNumberOfBalls + amount; i++)
             {
-                balls.Add(DataApi.CreateBall());
+                bool flaga = true;
+
+                while (flaga)
+                {
+                    balls.Add(DataApi.CreateBall());
+
+                    bool isNotPermeate = CheckIfBallsPermeate(i);
+
+                    if (!isNotPermeate)
+                    {
+                        flaga = false;
+                    }
+                }
             }
             return balls;
         }
@@ -77,7 +89,7 @@ namespace Logic
             IBall ball = (IBall)sender;
             WallCollision(ball);
             BallBounce(ball);
-        }
+        } 
 
         internal void WallCollision(IBall ball)
         {
@@ -172,5 +184,29 @@ namespace Logic
             }
             
         }
+
+        
+        private bool CheckIfBallsPermeate(int i)
+        {
+            bool permeate = false;
+
+            for (int j = 0; j < i; j++)
+            {
+
+                if (balls[i].XPosition <= balls[j].XPosition + balls[j].Radius && balls[i].XPosition + balls[i].Radius >= balls[j].XPosition)
+                {
+                    if (balls[i].YPosition <= balls[j].YPosition + balls[j].Radius && balls[i].YPosition + balls[i].Radius >= balls[j].YPosition)
+                    {
+
+                        permeate = true;
+                        balls.Remove(balls[i]);
+                        break;
+                    }
+                }
+            }
+
+            return permeate;
+        }
+        
     }
 }
